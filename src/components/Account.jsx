@@ -1,39 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import listIcon from '../assets/list-icon.png';
 import notificationIcon from '../assets/notification-icon.png';
 import editIcon from '../assets/edit-icon.png';
 
 const Account = () => {
   const navigate = useNavigate();
+  const [units, setUnits] = useState([]);
+  const [loading, setLoading] = useState(true); // To show a loading state while data is being fetched
+  const [error, setError] = useState(null); // To handle any errors
 
-  const units = [
-    {
-      id: 1,
-      title: "Property A, Unit C",
-      address: "1234 Alpha Way, Santa Barbara, CA 93105",
-      tenantName: "John Smith",
-      tenantEmail: "johnsmith@gmail.com",
-      notes: "They have a dog (additional fee approved), bathroom floor is already damaged."
-    },
-    {
-      id: 2,
-      title: "Property B, Unit D",
-      address: "5678 Beta Street, Santa Barbara, CA 93106",
-      tenantName: "Jane Doe",
-      tenantEmail: "janedoe@gmail.com",
-      notes: "Tenant is requesting a new refrigerator."
-    },
-    {
-      id: 3,
-      title: "Property C, Unit E",
-      address: "9101 Gamma Road, Santa Barbara, CA 93107",
-      tenantName: "Alex Johnson",
-      tenantEmail: "alexjohnson@gmail.com",
-      notes: "Carpet cleaning scheduled for next week."
-    },
-    // Add more units as needed
-  ];
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        // Retrieve the JWT token from localStorage
+        const token = localStorage.getItem('access_token');
+        
+        if (!token) {
+          throw new Error('No token found, please log in.');
+        }
+  
+        // Set up the headers with the token for authentication
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+  
+        // Make the API call to fetch units
+        const response = await axios.get('http://localhost:8000/api/units/', config);
+        setUnits(response.data); // Set the units state with the fetched data
+        setLoading(false); // Data fetching is complete
+      } catch (err) {
+        console.error('Error fetching units:', err);
+        setError('Failed to load units. Please try again later.');
+        setLoading(false); // Even if there is an error, stop loading
+      }
+    };
+    
+    fetchUnits();
+  }, []); // Empty dependency array means this runs once on component mount
+  
+  if (loading) {
+    return <div>Loading...</div>; // Or any loading indicator you prefer
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Display any error messages
+  }
 
   return (
     <div className="account-page" style={{ backgroundColor: '#F3F5F9', minHeight: '100vh' }}>
@@ -51,7 +66,7 @@ const Account = () => {
       {/* Unit Cards */}
       <div style={{ padding: '0 32px' }}>
         {units.map((unit, index) => (
-          <div key={index} className="unit-card" style={{ backgroundColor: '#FFFFFF', border: '1px solid #D9D9D9', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+          <div key={unit.id} className="unit-card" style={{ backgroundColor: '#FFFFFF', border: '1px solid #D9D9D9', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <h2 style={{ fontSize: '32px', color: '#333333', fontWeight: '700', lineHeight: '37.54px' }}>Unit #{index + 1}</h2>
               <img src={editIcon} alt="Edit" onClick={() => navigate(`/edit-unit/${unit.id}`)} style={{ cursor: 'pointer' }} />
@@ -67,9 +82,9 @@ const Account = () => {
               </div>
               <div style={{ marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Primary Tenant</h3>
-                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.tenantName}</p>
+                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.primary_tenant_name}</p>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Tenant's Email</h3>
-                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.tenantEmail}</p>
+                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.primary_tenant_email}</p>
               </div>
               <div>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Notes</h3>

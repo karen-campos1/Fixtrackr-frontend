@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Axios for making HTTP requests
-import logo from '../assets/FixtrackrLogo.png'; // Adjust path if necessary
+import axios from 'axios';
+import logo from '../assets/FixtrackrLogo.png';
 
 const SignUpPersonalInfo = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirm_password: '',
   });
   const [error, setError] = useState(null);
 
@@ -25,32 +25,51 @@ const SignUpPersonalInfo = () => {
     e.preventDefault();
     setError(null);
 
-     // Log the password and confirm password values
-  console.log('Password:', formData.password);
-  console.log('Confirm Password:', formData.confirmPassword);
+    // Trim inputs to remove any trailing spaces
+    const trimmedData = {
+      ...formData,
+      password: formData.password.trim(),
+      confirm_password: formData.confirm_password.trim(),
+    };
 
-  const trimmedPassword = formData.password.trim();
-  const trimmedConfirmPassword = formData.confirmPassword.trim();
+    console.log('Final Form Data before submission:', trimmedData);
 
-  if (trimmedPassword !== trimmedConfirmPassword) {
-    console.log({ error: 'Passwords do not match' });
-    return;
-  }
-
-  // Proceed with form submission
-  navigate('/signup-units', { state: { formData } });
-
+    if (trimmedData.password !== trimmedData.confirm_password) {
+      setError('Passwords do not match');
+      return;
+    }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/register-property-manager/', formData);
+      // Prepare the payload for registration
+      const payload = {
+        email: trimmedData.email,
+        username: trimmedData.email,
+        password: trimmedData.password,
+        confirm_password: trimmedData.confirm_password,
+        first_name: trimmedData.first_name,
+        last_name: trimmedData.last_name,
+      };
+
+      console.log('Payload being sent:', payload);
+
+      // Send registration request to the backend
+      const response = await axios.post('http://localhost:8000/api/register-property-manager/', payload);
       console.log(response.data);
-      navigate('/signup-units', { state: { formData } });
+
+      // Store tokens in localStorage if needed
+      if (response.data.access) {
+        localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+      }
+
+      // Navigate to the unit signup page, passing along formData
+      navigate('/signup-units', { state: { formData: trimmedData } });
     } catch (err) {
-      console.error(err.response.data);
-      setError(err.response.data.error || 'An error occurred');
+      console.error('Error response data:', err.response?.data);
+      setError(err.response?.data?.error || 'An error occurred during registration');
     }
   };
-
+  
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-[#F3F5F9] px-8 py-20">
       <img src={logo} alt="FixTrackr Logo" className="w-[75px] h-[83px] mb-[48px]" />
@@ -58,26 +77,26 @@ const SignUpPersonalInfo = () => {
         <h1 className="text-heading-3 font-bold text-[#333333] mb-2">Sign Up</h1>
         <p className="text-text-secondary mb-4">All inputs are required</p>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="firstName" className="block text-[#333333] mb-2">First Name</label>
+          <label htmlFor="first_name" className="block text-[#333333] mb-2">First Name</label>
           <input
             type="text"
-            id="firstName"
-            name="firstName"
+            id="first_name"
+            name="first_name" // Changed to match backend
             placeholder="Enter your first name"
             className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded"
-            value={formData.firstName}
+            value={formData.first_name} // Changed to match backend
             onChange={handleInputChange}
             required
           />
 
-          <label htmlFor="lastName" className="block text-[#333333] mb-2">Last Name</label>
+          <label htmlFor="last_name" className="block text-[#333333] mb-2">Last Name</label>
           <input
             type="text"
-            id="lastName"
-            name="lastName"
+            id="last_name"
+            name="last_name" // Changed to match backend
             placeholder="Enter your last name"
             className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded"
-            value={formData.lastName}
+            value={formData.last_name} // Changed to match backend
             onChange={handleInputChange}
             required
           />
@@ -106,14 +125,14 @@ const SignUpPersonalInfo = () => {
             required
           />
 
-          <label htmlFor="confirmPassword" className="block text-[#333333] mb-2">Confirm Password</label>
+          <label htmlFor="confirm_password" className="block text-[#333333] mb-2">Confirm Password</label>
           <input
             type="password"
-            id="confirmPassword"
-            name="confirmPassword"
+            id="confirm_password"
+            name="confirm_password" // Changed to match backend
             placeholder="Confirm your password"
             className="w-full p-3 mb-6 text-[#333333] border border-[#d9d9d9] rounded"
-            value={formData.confirmPassword}
+            value={formData.confirm_password} // Changed to match backend
             onChange={handleInputChange}
             required
           />

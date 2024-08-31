@@ -35,7 +35,7 @@ const OpenNotification = () => {
       <div style={{ marginTop: '24px' }}>
         {/* Tenant's Input Section */}
         <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #CCCCCC', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <h3 style={{ fontFamily: 'Work Sans', fontSize: '24px', fontWeight: 600, color: '#333333' }}>
               Property A, Unit C
             </h3>
@@ -65,7 +65,7 @@ const OpenNotification = () => {
               <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Tenant’s Availability</label>
               <input type="text" value="Monday - Friday 3PM - 6PM" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
-            <button style={{ background: '#E5F1FF', color: '#0466C8', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+            <button style={{ background: '#F3F5F9', color: '#5C5D6D', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
               See Images By Tenant (2)
             </button>
           </div>
@@ -102,7 +102,7 @@ const OpenNotification = () => {
             <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Your Message to Tenant</label>
             <textarea placeholder="Message" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} />
           </div>
-          <label style={{ display: 'block', cursor: 'pointer', background: '#E5F1FF', color: '#0466C8', padding: '8px 16px', borderRadius: '8px', border: 'none', position: 'relative' }}>
+          <label style={{ display: 'block', cursor: 'pointer', background: '#F3F5F9', color: '#5C5D6D', padding: '8px 16px', borderRadius: '8px', border: 'none', position: 'relative' }}>
             Attach Images
             <img src={paperclipIcon} alt="Attach" style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)' }} />
             <input type="file" style={{ display: 'none' }} onChange={handleImageUpload} />

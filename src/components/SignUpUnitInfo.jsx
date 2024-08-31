@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth'; // Import the utility function
 import helpIcon from '../assets/help-icon.png';
 import Logo from '../assets/white-logo.png';
 
@@ -9,6 +11,7 @@ const SignUpUnitInfo = () => {
   const [unitCount, setUnitCount] = useState(3); // Default value
   const [units, setUnits] = useState([]);
   const [showHelp, setShowHelp] = useState({});
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const newUnits = Array.from({ length: unitCount }, (_, index) => (
@@ -29,11 +32,44 @@ const SignUpUnitInfo = () => {
     setUnits(newUnits);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Redirect to the account page
-    navigate('/account');
+    setError(null);
+
+    try {
+      const token = await getAccessToken(); // Get a valid token
+      if (!token) {
+        throw new Error('No access token found');
+      }
+
+      // Loop through each unit and register it with the backend
+      for (const unit of units) {
+        const payload = {
+          unit_title: unit.title,
+          unit_address: unit.address,
+          primary_tenant_name: unit.tenantName,
+          primary_tenant_email: unit.tenantEmail,
+          notes: unit.notes,
+        };
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const response = await axios.post('http://127.0.0.1:8000/api/units/create/', payload, config);
+        console.log('Unit registered:', response.data);
+      }
+
+      // Redirect to the account page after unit registration
+      navigate('/account');
+    } catch (error) {
+      console.error('Unit registration failed:', error.response?.data || error.message);
+      setError(error.response?.data || 'An error occurred during unit registration');
+    }
   };
+
 
   return (
     <div className="bg-[#F3F5F9] min-h-screen flex flex-col items-center pt-[128px] px-8">
@@ -75,7 +111,7 @@ const SignUpUnitInfo = () => {
       </div>
 
       {units.map((unit, index) => (
-        <div key={index} className="bg-white p-6 mb-6 rounded-lg border border-[#d9d9d9] w-[366px] h-[600px]">
+        <div key={index} className="bg-white p-6 mb-6 rounded-lg border border-[#d9d9d9] w-[366px] min-h-[600px]">
           <h2 className="text-heading-3 font-bold text-text-primary mb-2">Unit #{index + 1}</h2>
           <label htmlFor={`unitTitle-${index}`} className="block text-[#333333] mb-2">Unit Title</label>
           <input
