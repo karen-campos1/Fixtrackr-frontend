@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import leftChevronIcon from '../assets/left-chevron.png'; 
+import leftChevronIcon from '../assets/left-chevron.png';
 
 const EditUnitCard = () => {
   const navigate = useNavigate();
@@ -30,19 +30,54 @@ const EditUnitCard = () => {
     });
   };
 
-  const handleFinish = () => {
-    console.log('Updated Unit Details:', formData);
-    navigate('/account');
+  const handleFinish = async () => {
+    try {
+      const response = await fetch(`http://your-backend-api-url/units/${id}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${yourToken}`, // Replace with actual token
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const updatedUnit = await response.json();
+        console.log('Updated Unit Details:', updatedUnit);
+        navigate('/account');
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to update unit:', errorData);
+      }
+    } catch (error) {
+      console.error('Error updating unit:', error);
+    }
   };
 
-  const handleDelete = () => {
-    console.log('Delete Unit:', id);
-    navigate('/account');
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`http://your-backend-api-url/units/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${yourToken}`, // Replace with actual token
+        },
+      });
+
+      if (response.ok) {
+        console.log('Unit deleted successfully');
+        navigate('/account');
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to delete unit:', errorData);
+      }
+    } catch (error) {
+      console.error('Error deleting unit:', error);
+    }
   };
 
   return (
     <div style={{ backgroundColor: '#F3F5F9', padding: '24px 32px' }}>
-    <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#0466C8', padding: '24px 32px', margin: '-24px -32px 0' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#0466C8', padding: '24px 32px', margin: '-24px -32px 0' }}>
         <img
           src={leftChevronIcon}
           alt="Go back"
@@ -51,7 +86,6 @@ const EditUnitCard = () => {
         />
       </div>
 
-      {/* Container for the form */}
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md mt-8" style={{ paddingLeft: '32px', paddingRight: '32px', marginTop: '27.5px' }}>
         <h1 className="text-heading-2 font-bold mb-6 text-primary-text">Unit #{unitDetails.unitNumber}</h1>
 
@@ -100,7 +134,6 @@ const EditUnitCard = () => {
           rows="4"
         />
 
-        {/* Finish button */}
         <button
           onClick={handleFinish}
           className="w-full py-3 text-white bg-[#0466c8] rounded-[25px] mb-4"
@@ -109,7 +142,6 @@ const EditUnitCard = () => {
           Finish
         </button>
 
-        {/* Delete Unit */}
         <button
           onClick={handleDelete}
           className="w-full text-center text-red-600 underline"
