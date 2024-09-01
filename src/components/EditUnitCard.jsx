@@ -76,7 +76,7 @@ const EditUnitCard = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#F3F5F9', padding: '24px 32px' }}>
+    <div style={{ backgroundColor: '#F3F5F9', minHeight: '100vh', padding: '24px 32px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#0466C8', padding: '24px 32px', margin: '-24px -32px 0' }}>
         <img
           src={leftChevronIcon}

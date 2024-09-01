@@ -1,93 +1,153 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import leftChevronIcon from '../assets/left-chevron.png';
 import helpIcon from '../assets/help-icon.png';
-import chevronLeft from '../assets/left-chevron.png';
+import { getAccessToken } from '../utils/auth';
 
-const AddUnit = ({ existingUnitsCount }) => {
-  const [formData, setFormData] = useState({
-    unitTitle: '',
-    unitAddress: '',
-    primaryTenant: '',
-    primaryTenantEmail: '',
-    notes: ''
-  });
-
-  const [showHelp, setShowHelp] = useState(false);
+const AddNewUnit = () => {
   const navigate = useNavigate();
-  const unitNumber = existingUnitsCount + 1;
+  const [unit, setUnit] = useState({
+    title: '',
+    address: '',
+    tenantName: '',
+    tenantEmail: '',
+    notes: '',
+  });
+  const [showHelp, setShowHelp] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleInputChange = (field, value) => {
+    setUnit({ ...unit, [field]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform the API call to add a new unit
-    try {
-      // Example API call to add the unit
-      await fetch('/api/add-unit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+    setError(null);
 
-      navigate('/account'); // Navigate back to the account page
+    try {
+      const token = await getAccessToken(); // Get a valid token
+      if (!token) {
+        throw new Error('No access token found');
+      }
+
+      const payload = {
+        unit_title: unit.title,
+        unit_address: unit.address,
+        primary_tenant_name: unit.tenantName,
+        primary_tenant_email: unit.tenantEmail,
+        notes: unit.notes,
+      };
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const response = await axios.post('http://127.0.0.1:8000/api/units/create/', payload, config);
+      console.log('Unit registered:', response.data);
+
+      // Redirect to the account page after unit registration
+      navigate('/account');
     } catch (error) {
-      console.error('Error adding unit:', error);
+      console.error('Unit registration failed:', error.response?.data || error.message);
+      setError(error.response?.data || 'An error occurred during unit registration');
     }
   };
 
   return (
-    <div style={{ background: '#F3F5F9', padding: '32px' }}>
-      <div style={{ background: '#0466C8', height: '96px', width: '100%' }}>
+    <div style={{ backgroundColor: '#F3F5F9', minHeight: '100vh', padding: '24px 32px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#0466C8', padding: '24px 32px', margin: '-24px -32px 0' }}>
         <img
-          src={chevronLeft}
-          alt="Back"
-          style={{ width: '24px', height: '24px', cursor: 'pointer' }}
+          src={leftChevronIcon}
+          alt="Go back"
+          className="cursor-pointer"
           onClick={() => navigate('/account')}
         />
       </div>
-      <form onSubmit={handleSubmit} style={{ background: '#FFFFFF', padding: '32px', borderRadius: '12px', marginTop: '27.5px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: '700', color: '#333333' }}>Unit #{unitNumber}</h1>
-        <label>
+
+      {/* Inner Container */}
+      <div className="mt-[32px] w-[366px] bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-heading-3 font-bold text-[#333333] mb-4">Unit Details</h2>
+
+        <label htmlFor="unitTitle" className="block text-[#333333] mb-2">
           Unit Title
-          <input type="text" name="unitTitle" value={formData.unitTitle} onChange={handleChange} placeholder="Enter your unit's title" />
         </label>
-        <label>
+        <input
+          type="text"
+          id="unitTitle"
+          className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded-[8px]"
+          placeholder="Enter your unit's title"
+          value={unit.title}
+          onChange={(e) => handleInputChange('title', e.target.value)}
+        />
+
+        <label htmlFor="unitAddress" className="block text-[#333333] mb-2">
           Unit Address
-          <input type="text" name="unitAddress" value={formData.unitAddress} onChange={handleChange} placeholder="Enter your unit's address" />
         </label>
-        <label>
+        <input
+          type="text"
+          id="unitAddress"
+          className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded-[8px]"
+          placeholder="Enter your unit's address"
+          value={unit.address}
+          onChange={(e) => handleInputChange('address', e.target.value)}
+        />
+
+        <label htmlFor="tenantName" className="block text-[#333333] mb-2">
           Primary Tenant
-          <input type="text" name="primaryTenant" value={formData.primaryTenant} onChange={handleChange} placeholder="Enter your primary tenant's name" />
         </label>
-        <label style={{ position: 'relative' }}>
-          Primary Tenant's Email
+        <input
+          type="text"
+          id="tenantName"
+          className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded-[8px]"
+          placeholder="Enter your primary tenant's name"
+          value={unit.tenantName}
+          onChange={(e) => handleInputChange('tenantName', e.target.value)}
+        />
+
+        <div className="flex items-center mb-2">
+          <label htmlFor="tenantEmail" className="block text-[#333333]">Primary Tenant’s Email</label>
           <img
             src={helpIcon}
-            alt="Help"
-            style={{ width: '16px', height: '16px', cursor: 'pointer', marginLeft: '8px' }}
+            alt="Help Icon"
+            className="w-4 h-4 cursor-pointer ml-2"
             onClick={() => setShowHelp(!showHelp)}
           />
-          {showHelp && (
-            <p style={{ color: '#5C5D6D', fontSize: '14px', margin: '8px 0 0' }}>
-              This email ensures that maintenance requests from this unit are routed correctly to you through FixTrackr.
-            </p>
-          )}
-          <input type="email" name="primaryTenantEmail" value={formData.primaryTenantEmail} onChange={handleChange} placeholder="Enter your primary tenant's email" />
-        </label>
-        <label>
-          Notes
-          <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Notes"></textarea>
-        </label>
-        <button type="submit" style={{ background: '#0466C8', color: '#FFFFFF', borderRadius: '25px', padding: '16px 0', width: '100%', marginTop: '32px' }}>
+        </div>
+        {showHelp && (
+          <p className="text-[#5C5D6D] mb-2">
+            This email ensures that maintenance requests from this unit are routed correctly to you through FixTrackr.
+          </p>
+        )}
+        <input
+          type="email"
+          id="tenantEmail"
+          className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded-[8px]"
+          placeholder="Enter your primary tenant's email"
+          value={unit.tenantEmail}
+          onChange={(e) => handleInputChange('tenantEmail', e.target.value)}
+        />
+
+        <label htmlFor="notes" className="block text-[#333333] mb-2">Notes</label>
+        <textarea
+          id="notes"
+          className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded-[8px]"
+          placeholder="Notes"
+          value={unit.notes}
+          onChange={(e) => handleInputChange('notes', e.target.value)}
+        />
+
+        <button
+          onClick={handleSubmit}
+          className="w-full py-3 text-white bg-primary rounded-[25px] mt-4"
+        >
           Finish
         </button>
-      </form>
+      </div>
     </div>
   );
 };
 
-export default AddUnit;
+export default AddNewUnit;

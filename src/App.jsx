@@ -10,6 +10,7 @@ import AddUnit from './components/AddUnit';
 import Notifications from './components/Notifications';
 import OpenNotification from './components/OpenNotification';
 import TaskList from './components/TaskCardList';
+import SortFilter from './components/SortFilter';
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
       <Route path="/notifications" element={<Notifications />} /> 
       <Route path="/open-request/:id" element={<OpenNotification />} />
       <Route path="/task-list" element={<TaskList />} /> 
-
+      <Route path="/sort-and-filter" element={<SortFilter />} />  
     </Routes>
   );
 }
