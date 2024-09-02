@@ -15,24 +15,33 @@ const OpenNotification = () => {
   };
 
   const handleFinish = () => {
-    // Logic to save form data and push it to the backend
-    // After saving, navigate back to the task list page
     navigate('/task-list');
   };
 
   const handleImageUpload = (event) => {
     const files = event.target.files;
     console.log("Uploaded files:", files);
-    // You can add logic here to handle file uploads
+
   };
 
   return (
-    <div style={{ backgroundColor: '#F3F5F9', padding: '24px 32px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', backgroundColor: '#0466C8', padding: '24px 32px', margin: '-24px -32px 0' }}>
-        <img src={leftChevronIcon} alt="Back" style={{ cursor: 'pointer' }} onClick={() => navigate('/notifications')} />
+    <div style={{ backgroundColor: '#F3F5F9', padding: '24px 32px', minHeight: '100vh',}}>
+<div style={{ 
+  display: 'flex', 
+  justifyContent: 'space-between', 
+  backgroundColor: '#0466C8', 
+  padding: '24px 32px', 
+  margin: '0', 
+  zIndex: '1000', 
+  position: 'fixed', 
+  top: '0', 
+  left: '0', 
+  width: '100%',
+}}>
+      <img src={leftChevronIcon} alt="Back" style={{ cursor: 'pointer' }} onClick={() => navigate('/notifications')} />
       </div>
       
-      <div style={{ marginTop: '24px' }}>
+      <div style={{ marginTop: '24px',  paddingTop: '85px' }}>
         {/* Tenant's Input Section */}
         <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #CCCCCC', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
@@ -50,19 +59,19 @@ const OpenNotification = () => {
           )}
           <div style={{ marginTop: '24px' }}>
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Unit Title</label>
+              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Unit Title</label>
               <input type="text" value="Property A, Unit C" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Subject</label>
+              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Subject</label>
               <input type="text" value="Toilet Leak - Started Yesterday" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Tenant’s Message</label>
+              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Tenant’s Message</label>
               <textarea value="The pipe connected to our toilet is starting to drip. I tried tightening it with a wrench but it didn’t work. We need someone to come in ASAP." style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC', minHeight: '120px' }} disabled />
             </div>
             <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Tenant’s Availability</label>
+              <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Tenant’s Availability</label>
               <input type="text" value="Monday - Friday 3PM - 6PM" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
             <button style={{ background: '#F3F5F9', color: '#5C5D6D', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
@@ -74,14 +83,14 @@ const OpenNotification = () => {
         {/* Property Manager's Input Section */}
         <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #CCCCCC', borderRadius: '12px', padding: '24px' }}>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Set Priority</label>
+            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#333333' }}>Set Priority</label>
             <select style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }}>
               <option value="high" style={{ color: '#DC3545' }}>High Priority</option>
               <option value="low" style={{ color: '#FFC107' }}>Low Priority</option>
             </select>
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Current Status</label>
+            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#333333' }}>Current Status</label>
             <select style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }}>
               <option value="received">Received Request</option>
               <option value="read">Request Read</option>
@@ -91,15 +100,15 @@ const OpenNotification = () => {
             </select>
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Contractor</label>
+            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#333333' }}>Contractor</label>
             <input type="text" placeholder="Contractor" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} />
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Contractor’s Contact Info</label>
+            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#333333' }}>Contractor’s Contact Info</label>
             <input type="text" placeholder="(000)000-0000" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} />
           </div>
           <div style={{ marginBottom: '16px' }}>
-            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 600, color: '#333333' }}>Your Message to Tenant</label>
+            <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#333333' }}>Your Message to Tenant</label>
             <textarea placeholder="Message" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} />
           </div>
           <label style={{ display: 'block', cursor: 'pointer', background: '#F3F5F9', color: '#5C5D6D', padding: '8px 16px', borderRadius: '8px', border: 'none', position: 'relative' }}>

@@ -26,7 +26,7 @@ const AddNewUnit = () => {
     setError(null);
 
     try {
-      const token = await getAccessToken(); // Get a valid token
+      const token = await getAccessToken(); 
       if (!token) {
         throw new Error('No access token found');
       }
@@ -48,7 +48,7 @@ const AddNewUnit = () => {
       const response = await axios.post('http://127.0.0.1:8000/api/units/create/', payload, config);
       console.log('Unit registered:', response.data);
 
-      // Redirect to the account page after unit registration
+
       navigate('/account');
     } catch (error) {
       console.error('Unit registration failed:', error.response?.data || error.message);

@@ -8,27 +8,27 @@ import editIcon from '../assets/edit-icon.png';
 const Account = () => {
   const navigate = useNavigate();
   const [units, setUnits] = useState([]);
-  const [loading, setLoading] = useState(true); // To show a loading state while data is being fetched
-  const [error, setError] = useState(null); // To handle any errors
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        // Retrieve the JWT token from localStorage
+
         const token = localStorage.getItem('access_token');
         
         if (!token) {
           throw new Error('No token found, please log in.');
         }
   
-        // Set up the headers with the token for authentication
+        
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
   
-        // Make the API call to fetch units
+
         const response = await axios.get('http://localhost:8000/api/units/', config);
         setUnits(response.data); // Set the units state with the fetched data
         setLoading(false); // Data fetching is complete

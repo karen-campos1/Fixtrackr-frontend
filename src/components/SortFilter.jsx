@@ -37,7 +37,6 @@ const SortFilter = () => {
   };
 
   const handleShowResults = () => {
-    // Logic to filter tasks based on selected options
     console.log('Sort By:', sortBy);
     console.log('Priority:', priority);
     console.log('Units:', units);

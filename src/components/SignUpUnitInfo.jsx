@@ -8,7 +8,7 @@ import Logo from '../assets/white-logo.png';
 const SignUpUnitInfo = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [unitCount, setUnitCount] = useState(3); // Default value
+  const [unitCount, setUnitCount] = useState(3); 
   const [units, setUnits] = useState([]);
   const [showHelp, setShowHelp] = useState({});
   const [error, setError] = useState(null);
@@ -37,12 +37,11 @@ const SignUpUnitInfo = () => {
     setError(null);
 
     try {
-      const token = await getAccessToken(); // Get a valid token
+      const token = await getAccessToken(); 
       if (!token) {
         throw new Error('No access token found');
       }
 
-      // Loop through each unit and register it with the backend
       for (const unit of units) {
         const payload = {
           unit_title: unit.title,
@@ -62,7 +61,6 @@ const SignUpUnitInfo = () => {
         console.log('Unit registered:', response.data);
       }
 
-      // Redirect to the account page after unit registration
       navigate('/account');
     } catch (error) {
       console.error('Unit registration failed:', error.response?.data || error.message);
@@ -74,7 +72,7 @@ const SignUpUnitInfo = () => {
   return (
     <div className="bg-[#F3F5F9] min-h-screen flex flex-col items-center pt-[128px] px-8">
       {/* Header Section */}
-      <header className="w-full h-[96px] bg-[#0466c8] flex items-center justify-center fixed top-0 left-0">
+      <header className="w-full h-[96px] bg-[#0466c8] flex items-center justify-center fixed top-0 left-0 z-[1000]">
         <img src={Logo} alt="Logo" className="w-[43.66px] h-[48px]" />
       </header>
 

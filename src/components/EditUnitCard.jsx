@@ -36,7 +36,7 @@ const EditUnitCard = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${yourToken}`, // Replace with actual token
+          'Authorization': `Bearer ${yourToken}`, 
         },
         body: JSON.stringify(formData),
       });
@@ -59,7 +59,7 @@ const EditUnitCard = () => {
       const response = await fetch(`http://your-backend-api-url/units/${id}/`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${yourToken}`, // Replace with actual token
+          'Authorization': `Bearer ${yourToken}`, 
         },
       });
 

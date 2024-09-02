@@ -25,7 +25,7 @@ const SignUpPersonalInfo = () => {
     e.preventDefault();
     setError(null);
 
-    // Trim inputs to remove any trailing spaces
+
     const trimmedData = {
       ...formData,
       password: formData.password.trim(),
@@ -39,9 +39,8 @@ const SignUpPersonalInfo = () => {
       return;
     }
 
-    try {
-      // Prepare the payload for registration
-      const payload = {
+    try {  
+        const payload = {
         email: trimmedData.email,
         username: trimmedData.email,
         password: trimmedData.password,
@@ -93,10 +92,10 @@ const SignUpPersonalInfo = () => {
           <input
             type="text"
             id="last_name"
-            name="last_name" // Changed to match backend
+            name="last_name" 
             placeholder="Enter your last name"
             className="w-full p-3 mb-4 text-[#333333] border border-[#d9d9d9] rounded"
-            value={formData.last_name} // Changed to match backend
+            value={formData.last_name} 
             onChange={handleInputChange}
             required
           />
@@ -129,10 +128,10 @@ const SignUpPersonalInfo = () => {
           <input
             type="password"
             id="confirm_password"
-            name="confirm_password" // Changed to match backend
+            name="confirm_password" 
             placeholder="Confirm your password"
             className="w-full p-3 mb-6 text-[#333333] border border-[#d9d9d9] rounded"
-            value={formData.confirm_password} // Changed to match backend
+            value={formData.confirm_password} 
             onChange={handleInputChange}
             required
           />
