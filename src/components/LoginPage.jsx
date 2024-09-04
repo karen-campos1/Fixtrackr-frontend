@@ -10,10 +10,13 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', { email, password });
+      const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+        email,
+        password: password.trim(),  // Trim the password
+      });
       localStorage.setItem('access_token', response.data.access);
       localStorage.setItem('refresh_token', response.data.refresh);
-      navigate('/task-card-list');
+      navigate('/task-list');
     } catch (error) {
       console.error('Login failed:', error.response?.data);
     }

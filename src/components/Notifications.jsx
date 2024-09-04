@@ -8,9 +8,9 @@ const Notifications = () => {
 
   // Hardcoded example data
   const notifications = [
-    { id: 1, issue: "Toilet Leak - Started Yesterday", property: "Property A, Unit C" },
-    { id: 2, issue: "Exterior Light Fixture Replacement", property: "Property A, Unit C" },
-    { id: 3, issue: "Dishwasher Leaking During Cycle", property: "Property A, Unit C" }
+    { id: 1, issue: "Leak in the ceiling", property: "123 Main St, unit 100" },
+    { id: 2, issue: "Exterior Light Fixture Replacement", property: "555 Dallas St, Lemon House" },
+    { id: 3, issue: "Dishwasher Leaking During Cycle", property: "321 Yellow St, Chainey Duplex #A" }
   ];
 
   const handleNotificationClick = (id) => {

@@ -10,27 +10,27 @@ const Account = () => {
   const [units, setUnits] = useState([]);
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
+  const [firstName, setFirstName] = useState(''); // State to store the property manager's first name
 
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-
         const token = localStorage.getItem('access_token');
         
         if (!token) {
           throw new Error('No token found, please log in.');
         }
   
-        
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
   
-
         const response = await axios.get('http://localhost:8000/api/units/', config);
-        setUnits(response.data); // Set the units state with the fetched data
+        
+        setFirstName(response.data.property_manager_first_name); // Set the first name
+        setUnits(response.data.units); // Set the units state with the fetched data
         setLoading(false); // Data fetching is complete
       } catch (err) {
         console.error('Error fetching units:', err);
@@ -51,7 +51,7 @@ const Account = () => {
   }
 
   return (
-    <div className="account-page" style={{ backgroundColor: '#F3F5F9', minHeight: '100vh' }}>
+    <div className="account-page" style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#F3F5F9', minHeight: '100vh' }}>
       {/* Blue Banner */}
       <div className="banner" style={{ backgroundColor: '#0466C8', padding: '24px 32px', display: 'flex', justifyContent: 'space-between' }}>
         <img src={listIcon} alt="Menu" onClick={() => navigate('/task-list')} style={{ cursor: 'pointer' }} />
@@ -60,7 +60,7 @@ const Account = () => {
 
       {/* Welcome Text */}
       <h1 style={{ margin: '32px 32px 24px', fontSize: '40px', color: '#5C5D6D', lineHeight: '46.92px', fontWeight: '700' }}>
-        Hi Samantha!
+        Hi {firstName}!
       </h1>
 
       {/* Unit Cards */}
@@ -82,9 +82,9 @@ const Account = () => {
               </div>
               <div style={{ marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Primary Tenant</h3>
-                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.primary_tenant_name}</p>
+                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.tenant_full_name}</p> {/* Update to tenant_full_name */}
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Tenant's Email</h3>
-                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.primary_tenant_email}</p>
+                <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.tenant_email}</p> {/* Update to tenant_email */}
               </div>
               <div>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Notes</h3>

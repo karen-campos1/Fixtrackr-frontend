@@ -37,10 +37,14 @@ const SortFilter = () => {
   };
 
   const handleShowResults = () => {
-    console.log('Sort By:', sortBy);
-    console.log('Priority:', priority);
-    console.log('Units:', units);
-    navigate('/task-list');
+    // Pass the selected filters and sorting to the TaskCardList component via state
+    navigate('/task-list', {
+      state: {
+        sortBy,
+        priority,
+        units,
+      },
+    });
   };
 
   return (
@@ -153,7 +157,7 @@ const SortFilter = () => {
                 onChange={handleUnitsChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
-              Property A, Unit A
+              123 Main St, unit 100
             </label>
             <label className="flex items-center gap-3">
               <input
@@ -163,7 +167,7 @@ const SortFilter = () => {
                 onChange={handleUnitsChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
-              Property A, Unit B
+              555 Dallas St, Lemon House
             </label>
             <label className="flex items-center gap-3">
               <input
@@ -173,7 +177,7 @@ const SortFilter = () => {
                 onChange={handleUnitsChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
-              Property B, Unit A
+              321 Yellow St, Chainey Duplex #A
             </label>
           </div>
         </div>

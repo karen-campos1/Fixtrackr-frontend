@@ -46,35 +46,35 @@ const OpenNotification = () => {
         <div style={{ backgroundColor: '#FFFFFF', border: '1px solid #CCCCCC', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
             <h3 style={{ fontFamily: 'Work Sans', fontSize: '24px', fontWeight: 600, color: '#333333' }}>
-              Property A, Unit C
+              123 Main St, Unit 100
             </h3>
             <img src={infoIcon} alt="Info" style={{ cursor: 'pointer' }} onClick={handleInfoClick} />
           </div>
           {showTenantInfo && (
             <div style={{ marginTop: '16px', color: '#5C5D6D' }}>
-              1234 Alpha Way, Santa Barbara, CA 93105<br />
-              Primary Email: johnsmith@gmail.com<br />
-              Notes: they have a dog (additional fee approved), bathroom floor is already damaged.
+              123 Main St, Santa Barbara, CA 93105<br />
+              Primary Email: KK@example.com<br />
+              Notes: Has a small dog. Friendly & potty trained.
             </div>
           )}
           <div style={{ marginTop: '24px' }}>
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Unit Title</label>
-              <input type="text" value="Property A, Unit C" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
+              <input type="text" value="123 Main St, Unit 100" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Subject</label>
-              <input type="text" value="Toilet Leak - Started Yesterday" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
+              <input type="text" value="Leak in the ceiling" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Tenant’s Message</label>
-              <textarea value="The pipe connected to our toilet is starting to drip. I tried tightening it with a wrench but it didn’t work. We need someone to come in ASAP." style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC', minHeight: '120px' }} disabled />
+              <textarea value="After the storm over the weekend there has been a leak in the ceiling in the kitchen. We have a bucket currently catching the water but the ceiling looks messed up." style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC', minHeight: '120px' }} disabled />
             </div>
             <div style={{ marginBottom: '16px' }}>
               <label style={{ display: 'block', fontFamily: 'Open Sans', fontWeight: 500, color: '#5C5D6D' }}>Tenant’s Availability</label>
-              <input type="text" value="Monday - Friday 3PM - 6PM" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
+              <input type="text" value="Monday - Friday anytime after 11am" style={{ width: '100%', padding: '8px', borderRadius: '8px', border: '1px solid #CCCCCC' }} disabled />
             </div>
-            <button style={{ background: '#F3F5F9', color: '#5C5D6D', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>
+            <button style={{ background: '#F3F5F9', color: '#5C5D6D', padding: '8px 56px', borderRadius: '8px', border: 'none', cursor: 'pointer'}}>
               See Images By Tenant (2)
             </button>
           </div>
