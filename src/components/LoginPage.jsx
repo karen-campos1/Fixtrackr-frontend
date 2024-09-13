@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import logo from '../assets/.png'; 
+import logo from '../assets/FixtrackrLogo.png'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-[#F3F5F9] px-[32px]">
       <div className="mt-[79px] mb-[49px]">
-      <img src="/FixTrackrLogo.png" alt="FixTrackr Logo" className="w-[149.81px] h-[164.72px]" />
+      <img src={logo} alt="FixTrackr Logo" className="w-[149.81px] h-[164.72px]" />
       </div>
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-[366px]">
         <label htmlFor="email" className="block text-[#333333] mb-2">Email</label>
