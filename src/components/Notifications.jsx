@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';  
 import listIcon from '../assets/list-icon.png'; 
 import notificationIcon from '../assets/notification-icon.png';
+import { axiosInstance } from '../auth/privateAxios';
 
 const Notifications = () => {
   const navigate = useNavigate();
@@ -10,43 +10,33 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const token = localStorage.getItem('access_token');
-
   // Fetch notifications from the backend
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        
-        const response = await axios.get('http://localhost:8000/api/notifications/', config);
+        const response = await axiosInstance.get(`/notifications/`);
         setNotifications(response.data);  // Assuming backend sends an array of notifications
         setLoading(false);
       } catch (err) {
+        console.log("Error = ",err)
         setError('Failed to load notifications');
         setLoading(false);
       }
     };
 
     fetchNotifications();
-  }, [token]);
+  }, []);
 
-  const handleNotificationClick = async (id) => {
+  const handleNotificationClick = async (notification_id,request_id) => {
     try {
       // Mark the notification as read in the backend
-      await axios.post(`http://localhost:8000/api/maintenance-requests/read/${id}/`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axiosInstance.put(`http://localhost:8000/api/notifications/read/${notification_id}/`);
       // Remove the notification from the list after it's opened
-      setNotifications((prevNotifications) => prevNotifications.filter(n => n.id !== id));
+      setNotifications((prevNotifications) => prevNotifications.filter(n => n.id !== notification_id));
       // Navigate to the open request page
-      navigate(`/open-request/${id}`);
+      navigate(`/open-request/${request_id}`);
     } catch (err) {
+      console.log("Error = ",err)
       setError('Failed to open notification');
     }
   };
@@ -71,12 +61,12 @@ const Notifications = () => {
       <div style={{ marginTop: '32px', marginLeft: '32px', paddingRight: '32px'}}>
         {notifications.map((notification) => (
           <div key={notification.id} style={{ backgroundColor: '#FFFFFF', border: '1px solid #D9D9D9', borderRadius: '25px', padding: '24px', marginBottom: '16px', cursor: 'pointer' }}
-               onClick={() => handleNotificationClick(notification.id)}>
+               onClick={() => handleNotificationClick(notification.id,notification.maintenance_request)}>
             <p style={{ fontFamily: 'Open Sans', fontSize: '18px', fontWeight: 600, color: '#333333', marginBottom: '0px' }}>
               {notification.issue}
             </p>
             <p style={{ fontFamily: 'Open Sans', fontSize: '16px', fontWeight: 400, color: '#5C5D6D' }}>
-              {notification.property}
+              {notification.unit_title}
             </p>
           </div>
         ))}
@@ -86,6 +76,15 @@ const Notifications = () => {
 };
 
 export default Notifications;
+
+
+
+
+
+
+
+
+
 
 
 

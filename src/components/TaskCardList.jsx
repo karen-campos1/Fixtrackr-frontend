@@ -1,123 +1,105 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import accountIcon from '../assets/account-icon.png';
 import notificationIcon from '../assets/notification-icon.png';
+import { axiosInstance } from '../auth/privateAxios';
+import SortFilter from './SortFilter';
 
 const TaskCardList = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
   const [activeTab, setActiveTab] = useState('open'); // default to "Open" tab
-
-  // Sample hardcoded data for tasks
-  const tasks = [
-    {
-      id: 1,
-      title: "Leak in the ceiling",
-      unit: "123 Main St, unit 100",
-      status: "Called Contractor",
-      priority: "high",
-      updatedAt: "2023-08-29",
-      color: "#DC3545BF", // High priority (red)
-      isClosed: false,
-    },
-    {
-      id: 2,
-      title: "Leaky Faucet in Bathroom",
-      unit: "555 Dallas St, Lemon House",
-      status: "Read Request",
-      priority: "low",
-      updatedAt: "2023-08-25",
-      color: "#FFC107BF", // Low priority (yellow)
-      isClosed: false,
-    },
-    {
-      id: 3,
-      title: "Pest Control in Kitchen",
-      unit: "321 Yellow St, Chainey Duplex #A",
-      status: "Appointment Set",
-      priority: "high",
-      updatedAt: "2023-08-20",
-      color: "#DC3545BF", // High priority (red)
-      isClosed: false,
-    },
-    {
-      id: 4,
-      title: "Malfunctioning Thermostat",
-      unit: "111 Erick Ave, Unit 11",
-      status: "Request Complete",
-      priority: "low",
-      updatedAt: "2023-08-15",
-      color: "#A6A6A6", // Closed task
-      isClosed: true,
-    },
-    {
-      id: 5,
-      title: "Fix Bathroom Molding",
-      unit: "Property A, Unit C",
-      status: "Request Complete",
-      priority: "low",
-      updatedAt: "2023-08-10",
-      color: "#A6A6A6", // Closed task
-      isClosed: true,
-    },
-  ];
-
-  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [tasks,setTasks] = useState(null)
+  const [units,setUnits] = useState(null)
+  const [showSort,setShowSort] = useState(false)
+  const [sortParams,setSortParams] = useState({priority:"",unit:null,sort_field:"most_recently_updated"})
+  const [loading,setLoading] = useState(true)
+  const [error,setError] = useState("")
+  const fetching = useRef(true)
 
   useEffect(() => {
-    let filtered = tasks.filter(task => !task.isClosed); // Default to open tasks
+    const fetchRequests = async () => {
+      try {
+        const response = await axiosInstance.get(`${import.meta.env.VITE_API_BASE_URL}/maintenance-requests/`)
+        setUnits(response.data.units)
+        setTasks(response.data.requests)
+        setLoading(false)
+      } catch (err) {
+        console.log("Error - ",err)
+        // console.error('Error fetching units:', err);
+        setError('Failed to load requests. Please try again later.');
+        setLoading(false); // Even if there is an error, stop loading
+      }
+    };
 
-    if (activeTab === 'closed') {
-      filtered = tasks.filter(task => task.isClosed); // Show closed tasks when 'closed' tab is active
-    } else if (activeTab === 'open') {
-      filtered = tasks.filter(task => !task.isClosed); // Show open tasks when 'open' tab is active
+    if (fetching.current){
+      fetching.current = false
+      fetchRequests();
     }
+  }, []);
 
-    // Apply sort and filter based on the passed state (location.state)
-    if (location.state) {
-      const { sortBy, priority, units } = location.state;
-
-      // Filter by priority
-      if (priority?.high || priority?.low) {
-        filtered = filtered.filter(task => {
-          return (priority.high && task.priority === 'high') ||
-                 (priority.low && task.priority === 'low');
-        });
+  const filteredTasks = useMemo(()=>{
+    let results = []
+    if (tasks){
+      results = [...tasks]
+      if (activeTab === 'closed') {
+        results = results.filter(task => task.isClosed); // Show closed tasks when 'closed' tab is active
+      }
+      else if (activeTab === 'open') {
+        results = results.filter(task => !task.isClosed); // Show open tasks when 'open' tab is active
+      }
+      if (sortParams.priority){
+        results = results.filter(task => {
+          return (sortParams.priority === "high" && task.priority === 'high') ||
+            (sortParams.priority === "low" && task.priority === 'low');
+          });
+      }
+      if (sortParams.unit){
+        results = results.filter(task => task.unit.id.toString() === sortParams.unit);
       }
 
-      // Filter by units
-      if (units?.unitA || units?.unitB || units?.unitC) {
-        filtered = filtered.filter(task => {
-          return (units.unitA && task.unit === "123 Main St, unit 100") ||
-                 (units.unitB && task.unit === "555 Dallas St, Lemon House") ||
-                 (units.unitC && task.unit === "321 Yellow St, Chainey Duplex #A");
-        });
+      if (sortParams.field === 'most_recently_updated'){
+        results = results.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
       }
-
-      // Sort tasks based on sorting criteria
-      if (sortBy === 'most_recently_updated') {
-        filtered = filtered.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-      } else if (sortBy === 'least_recently_updated') {
-        filtered = filtered.sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt));
-      } else if (sortBy === 'highest_priority') {
-        filtered = filtered.sort((a, b) => a.priority === 'high' ? -1 : 1);
+      else if (sortParams.field === 'least_recently_updated'){
+        results = results.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
+      }
+      else if (sortParams.field === 'highest_priority') {
+        results = results.sort((a) => a.priority === 'high' ? -1 : 1);
       }
     }
-
-    setFilteredTasks(filtered);
-  }, [activeTab, location.state]);
+    return results
+  },[tasks,sortParams,activeTab])
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  return (
+  const displayRequest = (task_id) => {
+    navigate(`/open-request/${task_id}`)
+  }
+
+  if (loading) {
+    return <div>Loading...</div>; // Or any loading indicator you prefer
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Display any error messages
+  }
+
+  return ( 
     <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#F3F5F9', minHeight: '100vh', padding: '24px 32px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#0466C8', padding: '24px 32px', margin: '-24px -32px 0', height: '96px' }}>
         <img src={accountIcon} alt="Account" style={{ cursor: 'pointer' }} onClick={() => navigate('/account')} />
         <img src={notificationIcon} alt="Notifications" style={{ cursor: 'pointer' }} onClick={() => navigate('/notifications')} />
       </div>
-
+      {showSort ? 
+      <SortFilter
+        units = {units}
+        sortParams = {sortParams}
+        setSortParams = {setSortParams}
+        closeMenu = {()=>setShowSort(false)}
+      /> :
       <div style={{ marginTop: '24px' }}>
         <button 
           style={{ 
@@ -155,7 +137,7 @@ const TaskCardList = () => {
             marginBottom: '16px',
             cursor: 'pointer'
           }}
-          onClick={() => navigate('/sort-and-filter')}
+          onClick={() => setShowSort(true)}
         >
           Sort/Filter
         </button>
@@ -202,15 +184,15 @@ const TaskCardList = () => {
         {/* Display request cards based on the selected tab */}
         <div style={{ marginBottom: '32px' }}>
           {filteredTasks.map(task => (
-            <div key={task.id} style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '25px 0px 0px 25px', marginBottom: '16px', border: '1px solid #CCCCCC', position: 'relative' }}>
-              <div style={{ backgroundColor: task.color, width: '24px', height: '100%', borderRadius: '0px 25px 25px 0px', position: 'absolute', top: 0, right: 0, opacity: 0.75 }}></div>
-              <h4 style={{ fontFamily: 'Open Sans', fontSize: '18px', fontWeight: 600, color: '#333333', marginBottom: '8px' }}>{task.title}</h4>
-              <p style={{ fontFamily: 'Open Sans', fontSize: '16px', fontWeight: 400, color: '#5C5D6D', marginBottom: '8px' }}>{task.unit}</p>
+            <div key={task.id} style={{ backgroundColor: '#FFFFFF', padding: '16px', borderRadius: '25px 0px 0px 25px', marginBottom: '16px', border: '1px solid #CCCCCC', position: 'relative' }} onClick = {()=>displayRequest(task.id)}>
+              <div style={{ backgroundColor: task.priority === "high" ? "#DC3545BF" : "#FFC107BF", width: '24px', height: '100%', borderRadius: '0px 25px 25px 0px', position: 'absolute', top: 0, right: 0, opacity: 0.75 }}></div>
+              <h4 style={{ fontFamily: 'Open Sans', fontSize: '18px', fontWeight: 600, color: '#333333', marginBottom: '8px' }}>{task.subject}</h4>
+              <p style={{ fontFamily: 'Open Sans', fontSize: '16px', fontWeight: 400, color: '#5C5D6D', marginBottom: '8px' }}>{task.unit.address}</p>
               <p style={{ fontFamily: 'Open Sans', fontSize: '16px', fontWeight: 400, color: '#0466C8' }}>{task.status}</p>
             </div>
           ))}
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

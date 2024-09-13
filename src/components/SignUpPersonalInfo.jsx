@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '../assets/FixtrackrLogo.png';
@@ -52,15 +52,16 @@ const SignUpPersonalInfo = () => {
       console.log('Payload being sent:', payload);
 
       // Send registration request to the backend
-      const response = await axios.post('http://localhost:8000/api/register-property-manager/', payload);
+      console.log("URL = ",`${import.meta.env.VITE_API_BASE_URL}/register-property-manager/`)
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/register-property-manager/`, payload);
       console.log(response.data);
-
-      // Store tokens in localStorage if needed
-      if (response.data.access) {
-        localStorage.setItem('access_token', response.data.access);
-        localStorage.setItem('refresh_token', response.data.refresh);
-      }
-
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('user',JSON.stringify({
+        email: response.data.email,
+        first_name: response.data.first_name,
+        last_name: response.data.last_name
+      }))
       // Navigate to the unit signup page, passing along formData
       navigate('/signup-units', { state: { formData: trimmedData } });
     } catch (err) {

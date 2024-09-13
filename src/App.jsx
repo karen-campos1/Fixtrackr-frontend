@@ -43,7 +43,6 @@ function App() {
           <Route path="/notifications" element={<Notifications />} /> 
           <Route path="/open-request/:id" element={<OpenNotification />} />
           <Route path="/task-list" element={<TaskList />} /> 
-          <Route path="/sort-and-filter" element={<SortFilter />} />  
           <Route path="/create-request" element={<CreateRequest />} />  
         </Routes>
       )}

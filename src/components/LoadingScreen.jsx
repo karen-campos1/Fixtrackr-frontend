@@ -1,4 +1,3 @@
-// components/LoadingScreen.jsx
 import React from 'react';
 import loadingImage from '../assets/LoadingScreen.png'; 
 

@@ -1,72 +1,32 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import accountIcon from '../assets/account-icon.png';
-import notificationIcon from '../assets/notification-icon.png';
+import PropTypes from 'prop-types';
 import blueChevronIcon from '../assets/blue-chevron.png';
 
-const SortFilter = () => {
-  const navigate = useNavigate();
-
-  const [sortBy, setSortBy] = useState('most_recently_updated');
-  const [priority, setPriority] = useState({
-    high: false,
-    low: false,
-  });
-  const [units, setUnits] = useState({
-    unitA: false,
-    unitB: false,
-    unitC: false,
-  });
+const SortFilter = ({units,sortParams,setSortParams,closeMenu}) => {
+  const [filters,setFilters] = useState({...sortParams})
+  const navigate = useNavigate()
 
   const handleSortChange = (e) => {
-    setSortBy(e.target.value);
+    setFilters({...filters,field:e.target.value})
   };
 
   const handlePriorityChange = (e) => {
-    setPriority({
-      ...priority,
-      [e.target.name]: e.target.checked,
-    });
+    setFilters({...filters,priority:e.target.checked ? e.target.name : ""})
   };
 
   const handleUnitsChange = (e) => {
-    setUnits({
-      ...units,
-      [e.target.name]: e.target.checked,
-    });
+    setFilters({...filters,unit:e.target.checked ? e.target.name : ""})
   };
 
   const handleShowResults = () => {
-    // Pass the selected filters and sorting to the TaskCardList component via state
-    navigate('/task-list', {
-      state: {
-        sortBy,
-        priority,
-        units,
-      },
-    });
+    setSortParams({...filters})
+    closeMenu()
+
   };
 
   return (
-    <div className="bg-[#F3F5F9] min-h-screen">
-      {/* Header Section */}
-      <header className="w-full h-[96px] bg-[#0466c8] flex items-center justify-between px-8 fixed top-0 left-0 z-10">
-        <img
-          src={accountIcon}
-          alt="Account"
-          className="cursor-pointer"
-          onClick={() => navigate('/account')}
-        />
-        <img
-          src={notificationIcon}
-          alt="Notifications"
-          className="cursor-pointer"
-          onClick={() => navigate('/notifications')}
-        />
-      </header>
-
-      {/* Main Content */}
-      <div className="pt-[120px] px-8">
+      <div className="px-8"  style = {{ marginTop: '24px' }}>
         <div className="flex items-center mb-8">
           <img
             src={blueChevronIcon}
@@ -87,7 +47,7 @@ const SortFilter = () => {
                 type="radio"
                 name="sortBy"
                 value="most_recently_updated"
-                checked={sortBy === 'most_recently_updated'}
+                checked={filters.field === 'most_recently_updated'}
                 onChange={handleSortChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
@@ -98,7 +58,7 @@ const SortFilter = () => {
                 type="radio"
                 name="sortBy"
                 value="least_recently_updated"
-                checked={sortBy === 'least_recently_updated'}
+                checked={filters.field === 'least_recently_updated'}
                 onChange={handleSortChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
@@ -109,7 +69,7 @@ const SortFilter = () => {
                 type="radio"
                 name="sortBy"
                 value="highest_priority"
-                checked={sortBy === 'highest_priority'}
+                checked={filters.field === 'highest_priority'}
                 onChange={handleSortChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
@@ -126,7 +86,7 @@ const SortFilter = () => {
               <input
                 type="checkbox"
                 name="high"
-                checked={priority.high}
+                checked={filters.priority === "high"}
                 onChange={handlePriorityChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
@@ -136,7 +96,7 @@ const SortFilter = () => {
               <input
                 type="checkbox"
                 name="low"
-                checked={priority.low}
+                checked={filters.priority === "low"}
                 onChange={handlePriorityChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
@@ -149,36 +109,18 @@ const SortFilter = () => {
         <div className="border-t border-[#D9D9D9] mb-6 pt-6">
           <h2 className="text-[24px] font-[600] text-[#333333] mb-4">Units</h2>
           <div className="flex flex-col gap-4">
-            <label className="flex items-center gap-3">
+            {[...units].map((unit,index)=>(
+              <label className="flex items-center gap-3" key = {index}>
               <input
                 type="checkbox"
-                name="unitA"
-                checked={units.unitA}
+                name= {unit.id}
+                checked={Number(filters.unit) === unit.id}
                 onChange={handleUnitsChange}
                 className="h-6 w-6 border-gray-300 text-[#333333]"
               />
-              123 Main St, unit 100
+              {unit.title}
             </label>
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name="unitB"
-                checked={units.unitB}
-                onChange={handleUnitsChange}
-                className="h-6 w-6 border-gray-300 text-[#333333]"
-              />
-              555 Dallas St, Lemon House
-            </label>
-            <label className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                name="unitC"
-                checked={units.unitC}
-                onChange={handleUnitsChange}
-                className="h-6 w-6 border-gray-300 text-[#333333]"
-              />
-              321 Yellow St, Chainey Duplex #A
-            </label>
+            ))}
           </div>
         </div>
 
@@ -189,8 +131,15 @@ const SortFilter = () => {
           Show Results
         </button>
       </div>
-    </div>
+    // </div>
   );
+};
+
+SortFilter.propTypes = {
+  units: PropTypes.array.isRequired,
+  sortParams: PropTypes.object.isRequired,
+  setSortParams: PropTypes.func.isRequired,
+  closeMenu: PropTypes.func.isRequired,
 };
 
 export default SortFilter;

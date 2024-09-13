@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -10,12 +10,19 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/login/', {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/login/`, {
         email,
         password: password.trim(),  // Trim the password
       });
-      localStorage.setItem('access_token', response.data.access);
-      localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
+      localStorage.setItem('user',JSON.stringify({
+        email: response.data.email,
+        first_name: response.data.first_name,
+        last_name: response.data.last_name
+      }))
+      localStorage.setItem('access_token', response.data.access_token);
+      localStorage.setItem('refresh_token', response.data.refresh_token);
       navigate('/task-list');
     } catch (error) {
       console.error('Login failed:', error.response?.data);

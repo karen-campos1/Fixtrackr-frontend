@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAccessToken } from '../utils/auth'; // Import the utility function
 import helpIcon from '../assets/help-icon.png';
 import Logo from '../assets/white-logo.png';
+import { axiosInstance } from '../auth/privateAxios';
 
 const SignUpUnitInfo = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  // const { state } = useLocation(); // ask why we  need it
   const [unitCount, setUnitCount] = useState(3); 
   const [units, setUnits] = useState([]);
   const [showHelp, setShowHelp] = useState({});
@@ -44,21 +44,21 @@ const SignUpUnitInfo = () => {
 
       for (const unit of units) {
         const payload = {
-          unit_title: unit.title,
-          unit_address: unit.address,
+          title: unit.title,
+          address: unit.address,
           primary_tenant_name: unit.tenantName,
           primary_tenant_email: unit.tenantEmail,
           notes: unit.notes,
         };
 
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
+        // const config = {
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // };
 
-        const response = await axios.post('http://127.0.0.1:8000/api/units/create/', payload, config);
-        console.log('Unit registered:', response.data);
+        const response = await axiosInstance.post(`/units/create/`, payload);
+        console.log("Response data = ",response.data)
       }
 
       navigate('/account');
@@ -77,6 +77,7 @@ const SignUpUnitInfo = () => {
       </header>
 
       <div className="mt-[32px] w-[366px]">
+        {error && <div>{error}</div>}
         <h1 className="text-heading-3 font-bold text-text-primary mb-4">
           Please enter unit details
         </h1>

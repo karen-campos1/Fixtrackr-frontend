@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import listIcon from '../assets/list-icon.png';
 import notificationIcon from '../assets/notification-icon.png';
 import editIcon from '../assets/edit-icon.png';
+import { axiosInstance } from '../auth/privateAxios';
 
 const Account = () => {
   const navigate = useNavigate();
@@ -15,20 +15,8 @@ const Account = () => {
   useEffect(() => {
     const fetchUnits = async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        
-        if (!token) {
-          throw new Error('No token found, please log in.');
-        }
-  
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-  
-        const response = await axios.get('http://localhost:8000/api/units/', config);
-        
+        const response = await axiosInstance.get(`${import.meta.env.VITE_API_BASE_URL}/units/`);
+        console.log("Response data = ",response.data)
         setFirstName(response.data.property_manager_first_name); // Set the first name
         setUnits(response.data.units); // Set the units state with the fetched data
         setLoading(false); // Data fetching is complete
@@ -77,13 +65,13 @@ const Account = () => {
                 <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.title}</p>
               </div>
               <div style={{ marginBottom: '16px' }}>
-                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Unit's Address</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Unit&lsquo;s Address</h3>
                 <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.address}</p>
               </div>
               <div style={{ marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Primary Tenant</h3>
                 <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.tenant_full_name}</p> {/* Update to tenant_full_name */}
-                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Tenant's Email</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#333333' }}>Tenant&lsquo;s Email</h3>
                 <p style={{ fontSize: '16px', color: '#5C5D6D' }}>{unit.tenant_email}</p> {/* Update to tenant_email */}
               </div>
               <div>

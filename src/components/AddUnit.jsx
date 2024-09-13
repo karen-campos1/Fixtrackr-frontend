@@ -4,6 +4,7 @@ import axios from 'axios';
 import leftChevronIcon from '../assets/left-chevron.png';
 import helpIcon from '../assets/help-icon.png';
 import { getAccessToken } from '../utils/auth';
+import { axiosInstance } from '../auth/privateAxios';
 
 const AddNewUnit = () => {
   const navigate = useNavigate();
@@ -30,25 +31,15 @@ const AddNewUnit = () => {
       if (!token) {
         throw new Error('No access token found');
       }
-
       const payload = {
-        unit_title: unit.title,
-        unit_address: unit.address,
+        title: unit.title,
+        address: unit.address,
         primary_tenant_name: unit.tenantName,
         primary_tenant_email: unit.tenantEmail,
         notes: unit.notes,
       };
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const response = await axios.post('http://127.0.0.1:8000/api/units/create/', payload, config);
+      const response = await axiosInstance.post(`/units/create/`, payload);
       console.log('Unit registered:', response.data);
-
-
       navigate('/account');
     } catch (error) {
       console.error('Unit registration failed:', error.response?.data || error.message);
